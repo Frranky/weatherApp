@@ -10,7 +10,7 @@ class WeatherApi {
 
 	private val key = "e7a53fb43aeccf8fff05234eccf7a50c"
 
-	fun getWeather(): JSONArray {
+	fun getWeather(): JSONObject {
 		val client = OkHttpClient()
 		val request = Request.Builder()
 			.url("https://api.openweathermap.org/data/2.5/weather?lat=44.34&lon=10.99&appid=$key")
@@ -20,9 +20,9 @@ class WeatherApi {
 		return getResponse(client.newCall(request).execute())
 	}
 
-	private fun getResponse(response: Response): JSONArray {
+	private fun getResponse(response: Response): JSONObject {
 		val jsonData = response.body()!!.string()
 		val jsonObject = JSONObject(jsonData)
-		return jsonObject.getJSONArray("response")
+		return jsonObject//.getJSONArray("response")
 	}
 }
