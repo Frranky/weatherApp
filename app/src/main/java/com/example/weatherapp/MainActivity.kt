@@ -7,9 +7,9 @@ import com.example.weatherapp.data.mapper.toForecastModel
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.google.gson.GsonBuilder
+import com.google.gson.internal.bind.util.ISO8601Utils.format
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -23,15 +23,18 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		binding = ActivityMainBinding.inflate(layoutInflater)
-		//val season = SimpleDateFormat("HH:mm").format(Date())
+		val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))
 
 		GlobalScope.launch {
 			val data = toForecastModel(getWeather())
 			saveData(data)
-			val data1 = toForecastModel(readData())
+
+			val cash = readData()//toForecastModel(readData())
+			val currentDate = cash.first
+			val data1 = toForecastModel(cash.second)
 
 			runOnUiThread {
-				binding.text.text = "${data[0].temp} ${data[0].feels_like} && ${data1[0].temp} ${data[0].feels_like}"
+				binding.text.text = /*"$cashDate ${currentDate.time}"*/"${data[0].temp} ${data[0].feels_like} && ${data1[0].temp} ${data1[0].feels_like}"
 			}
 		}
 		setContentView(binding.root)
@@ -48,11 +51,11 @@ class MainActivity : AppCompatActivity() {
 		file.appendText(json)
 	}
 
-	private fun readData(): String {
+	private fun readData(): Pair<Long, String> {
 		val path = this.baseContext.filesDir
 		val letDirectory = File(path, "json")
 		letDirectory.mkdirs()
 		val file = File(letDirectory, "data.json")
-		return FileInputStream(file).bufferedReader().use { it.readText() }
+		return file.lastModified() to FileInputStream(file).bufferedReader().use { it.readText() }
 	}
 }
