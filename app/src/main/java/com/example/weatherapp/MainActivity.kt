@@ -1,9 +1,11 @@
 package com.example.weatherapp
 
+import android.content.Context
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.example.weatherapp.data.api.getWeather
-import com.example.weatherapp.data.mapper.toForecastModel
+import androidx.core.view.get
+import androidx.fragment.app.FragmentTransaction
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.getData
@@ -37,7 +39,9 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			data = getData(currentDate, context)
+			val response = getData(currentDate, context)
+			data = response.first
+			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
 
 			for(i in 0 until data.size) {
@@ -49,9 +53,58 @@ class MainActivity : AppCompatActivity() {
 			launch(Dispatchers.Main) {
 				binding.chart.data = LineData(dataset)
 				binding.chart.xAxis.valueFormatter = formatter
+				binding.chart.xAxis.granularity = 1f
+				binding.chart.xAxis.textSize = 5f
+				binding.chart.axisLeft.setDrawGridLines(false)
+				binding.chart.description.text = "Last fetched: $fetchDate"
 				binding.chart.invalidate()
 			}
 		}
+
+		binding.navView.setOnItemSelectedListener {
+			when(it.itemId) {
+				R.id.temperature 	-> {
+					setTempChart("Temperature")
+					true
+				}
+				R.id.wind 			-> {
+					setTempChart("Wind (m/sec.)")
+					true
+				}
+				else 				-> true
+			}
+		}
+
+		binding.toolbar.information.setOnClickListener {
+			val myDialogFragment = AboutDialogFragment()
+			val manager = supportFragmentManager
+			val transaction: FragmentTransaction = manager.beginTransaction()
+			myDialogFragment.show(transaction, "dialog")
+		}
 		setContentView(binding.root)
+	}
+
+	private fun setTempChart(name: String) {
+		val entries = arrayListOf<Entry>()
+
+		if(name == "Temperature") {
+			for(i in 0 until data.size) {
+				entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
+			}
+		}
+		else {
+			for(i in 0 until data.size) {
+				entries.add(Entry(i.toFloat(), data[i].wind_speed.toFloat()))
+			}
+		}
+
+		val dataset = LineDataSet(entries, name)
+		dataset.axisDependency = YAxis.AxisDependency.LEFT
+		binding.chart.data = LineData(dataset)
+		binding.chart.xAxis.valueFormatter = formatter
+		binding.chart.xAxis.granularity = 1f
+		binding.chart.xAxis.textSize = 5f
+		binding.chart.axisLeft.setDrawGridLines(false)
+		binding.chart.invalidate()
 	}
 }
