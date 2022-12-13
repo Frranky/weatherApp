@@ -5,5 +5,6 @@ data class ForecastModel(
 	val feels_like: String,
 	val weather: String,
 	val wind_speed: String,
+	val humidity: String,
 	val date: String
 )

@@ -29,5 +29,11 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
 		android:background="@color/white"
-		app:menu="@menu/menu_bottom"/>
+		app:menu="@menu/menu_bottom"
+		android:visibility="invisible"/>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:id="@+id/container" />
 </androidx.constraintlayout.widget.ConstraintLayout>

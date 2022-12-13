@@ -24,7 +24,7 @@ import java.util.Date
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
-	private lateinit var data: ArrayList<ForecastModel>
+	internal lateinit var data: ArrayList<ForecastModel>
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		binding = ActivityMainBinding.inflate(layoutInflater)
+		supportFragmentManager.beginTransaction().add(R.id.container, PreLoaderFragment()).commit()
 		val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 		val context = this.baseContext
 
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
 			dataset.axisDependency = YAxis.AxisDependency.LEFT
 
 			launch(Dispatchers.Main) {
+				binding.container.visibility = View.GONE
+				binding.navView.visibility = View.VISIBLE
 				binding.chart.data = LineData(dataset)
 				binding.chart.xAxis.valueFormatter = formatter
 				binding.chart.xAxis.granularity = 1f
@@ -71,6 +74,10 @@ class MainActivity : AppCompatActivity() {
 					setTempChart("Wind (m/sec.)")
 					true
 				}
+				R.id.humidity 			-> {
+					setTempChart("Humidity (%)")
+					true
+				}
 				else 				-> true
 			}
 		}
@@ -87,15 +94,19 @@ class MainActivity : AppCompatActivity() {
 	private fun setTempChart(name: String) {
 		val entries = arrayListOf<Entry>()
 
-		if(name == "Temperature") {
-			for(i in 0 until data.size) {
-				entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
-			}
-		}
-		else {
-			for(i in 0 until data.size) {
-				entries.add(Entry(i.toFloat(), data[i].wind_speed.toFloat()))
-			}
+		when(name) {
+			"Temperature" ->
+				for(i in 0 until data.size) {
+					entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
+				}
+			"Wind (m/sec.)" ->
+				for(i in 0 until data.size) {
+					entries.add(Entry(i.toFloat(), data[i].wind_speed.toFloat()))
+				}
+			"Humidity (%)" ->
+				for(i in 0 until data.size) {
+					entries.add(Entry(i.toFloat(), data[i].humidity.toFloat()))
+				}
 		}
 
 		val dataset = LineDataSet(entries, name)

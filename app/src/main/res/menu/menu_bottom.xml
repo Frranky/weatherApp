@@ -10,5 +10,9 @@
 		android:id="@+id/wind"
 		android:title="Wind"
 		android:icon="@drawable/ic_wind"/>
+	<item
+		android:id="@+id/humidity"
+		android:title="Humidity"
+		android:icon="@drawable/ic_water"/>
 
 </menu>
