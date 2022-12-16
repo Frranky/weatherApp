@@ -13,19 +13,20 @@ fun getData(currentDate: Long, context: Context): Pair<ArrayList<ForecastModel>,
 	val letDirectory = File(path, "json")
 	letDirectory.mkdirs()
 	val file = File(letDirectory, "data.json")
+	val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
 
-	if(currentDate - file.lastModified() < 600)
-		return toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() }) to file.lastModified()
+	if(currentDate - cash.second < 600)
+		return toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
 
 	val data = toForecastModel(getWeather())
-	saveData(data, context)
+	saveData(data, currentDate, context)
 	return data to currentDate
 }
 
-private fun saveData(data: ArrayList<ForecastModel>, context: Context) {
+private fun saveData(data: ArrayList<ForecastModel>, currentDate: Long, context: Context) {
 	val gsonBuilder = GsonBuilder()
 	val gson = gsonBuilder.create()
-	val json = gson.toJson(data)
+	val json = gson.toJson(data to currentDate)
 	val path = context.filesDir
 	val letDirectory = File(path, "json")
 	letDirectory.mkdirs()

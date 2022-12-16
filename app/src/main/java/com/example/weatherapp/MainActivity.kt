@@ -59,7 +59,8 @@ class MainActivity : AppCompatActivity() {
 				binding.chart.xAxis.granularity = 1f
 				binding.chart.xAxis.textSize = 5f
 				binding.chart.axisLeft.setDrawGridLines(false)
-				binding.chart.description.text = "Last fetched: $fetchDate"
+				binding.chart.description.text = ""
+				binding.fetchText.text = "Last fetched: $fetchDate"
 				binding.chart.invalidate()
 			}
 		}
