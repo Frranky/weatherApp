@@ -6,6 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
+import com.example.weatherapp.data.api.getGeocode
+import com.example.weatherapp.data.mapper.toGeocodeModel
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.getData
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
+			val geocode = toGeocodeModel(getGeocode("Tomsk"))
 			val response = getData(currentDate, context)
 			data = response.first
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
