@@ -26,7 +26,8 @@ import java.util.Date
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
-	internal lateinit var data: ArrayList<ForecastModel>
+	private lateinit var data: ArrayList<ForecastModel>
+	private val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
@@ -38,12 +39,11 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		binding = ActivityMainBinding.inflate(layoutInflater)
 		supportFragmentManager.beginTransaction().add(R.id.container, PreLoaderFragment()).commit()
-		val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			val geocode = toGeocodeModel(getGeocode("Tomsk"))
-			val response = getData(currentDate, context)
+			val name = "Tomsk"
+			val response = getData(currentDate, context, name)
 			data = response.first
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
@@ -92,6 +92,10 @@ class MainActivity : AppCompatActivity() {
 			val transaction: FragmentTransaction = manager.beginTransaction()
 			myDialogFragment.show(transaction, "dialog")
 		}
+
+		binding.searchButton.setOnClickListener {
+			fetchData(binding.searchText.text.toString())
+		}
 		setContentView(binding.root)
 	}
 
@@ -121,5 +125,28 @@ class MainActivity : AppCompatActivity() {
 		binding.chart.xAxis.textSize = 5f
 		binding.chart.axisLeft.setDrawGridLines(false)
 		binding.chart.invalidate()
+	}
+
+	private fun fetchData(name: String) {
+		val context = this.baseContext
+
+		GlobalScope.launch {
+			val response = getData(currentDate, context, name, false)
+			data = response.first
+			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
+			val entries = arrayListOf<Entry>()
+
+			for(i in 0 until data.size) {
+				entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
+			}
+			val dataset = LineDataSet(entries, "Temperature")
+			dataset.axisDependency = YAxis.AxisDependency.LEFT
+
+			launch(Dispatchers.Main) {
+				binding.chart.data = LineData(dataset)
+				binding.fetchText.text = "Last fetched: $fetchDate"
+				binding.chart.invalidate()
+			}
+		}
 	}
 }

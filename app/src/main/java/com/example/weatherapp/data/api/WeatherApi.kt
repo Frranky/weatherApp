@@ -6,12 +6,12 @@ import okhttp3.Response
 import org.json.JSONArray
 import org.json.JSONObject
 
-fun getWeather(): JSONArray {
+fun getWeather(lat: String, lon: String): JSONArray {
 	val client = OkHttpClient()
 	val request = Request.Builder()
 		.url("https://api.openweathermap.org/data/2.5/forecast?" +
-				 "lat=56.4977&" +
-				 "lon=84.9744&" +
+				 "lat=$lat&" +
+				 "lon=$lon&" +
 				 "appid=e7a53fb43aeccf8fff05234eccf7a50c&" +
 				 "units=metric")
 		.get()
