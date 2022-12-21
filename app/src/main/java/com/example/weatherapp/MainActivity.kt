@@ -1,16 +1,13 @@
 package com.example.weatherapp
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
-import com.example.weatherapp.data.api.getGeocode
-import com.example.weatherapp.data.mapper.toGeocodeModel
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.domain.usecase.getCityName
 import com.example.weatherapp.domain.usecase.getData
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
@@ -44,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			val name = "Tomsk"
+			val name = getCityName(context)
 			val response = getData(currentDate, context, name)
 			data = response.first
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
@@ -59,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 			launch(Dispatchers.Main) {
 				binding.container.visibility = View.GONE
 				binding.navView.visibility = View.VISIBLE
+				binding.toolbar.textView.text = name
 				binding.chart.data = LineData(dataset)
 				binding.chart.xAxis.valueFormatter = formatter
 				binding.chart.xAxis.granularity = 1f

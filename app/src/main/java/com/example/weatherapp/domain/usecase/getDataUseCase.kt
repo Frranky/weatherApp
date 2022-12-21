@@ -13,22 +13,41 @@ import java.io.FileInputStream
 fun getData(currentDate: Long, context: Context, name: String, flag: Boolean = true): Pair<ArrayList<ForecastModel>, Long> {
 	val path = context.filesDir
 	val letDirectory = File(path, "json")
-	letDirectory.mkdirs()
 	val file = File(letDirectory, "data.json")
-	val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
 	val geocode = toGeocodeModel(getGeocode(name))
 
-	if(currentDate - cash.second < 600 && flag)
-		return toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
+	if(file.exists()) {
+		val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
+
+		if(currentDate - cash.second < 600 && flag) // Почему-то не работает
+			return cash
+	}
 
 	val data = toForecastModel(getWeather(geocode.lat, geocode.lon))
-	saveData(data, currentDate, file)
+	saveData(name, data, currentDate, context)
 	return data to currentDate
 }
 
-private fun saveData(data: ArrayList<ForecastModel>, currentDate: Long, file: File) {
+fun getCityName(context: Context): String {
+	val path = context.filesDir
+	val letDirectory = File(path, "json")
+	val file = File(letDirectory, "city.json")
+
+	if(file.exists()) {
+		return FileInputStream(file).bufferedReader().use { it.readText() }
+	}
+	return "Moscow"
+}
+
+private fun saveData(city: String, data: ArrayList<ForecastModel>, currentDate: Long, context: Context) {
 	val gsonBuilder = GsonBuilder()
 	val gson = gsonBuilder.create()
 	val json = gson.toJson(data to currentDate)
+	val path = context.filesDir
+	val letDirectory = File(path, "json")
+	letDirectory.mkdirs()
+	val file = File(letDirectory, "data.json")
+	val cityFile = File(letDirectory, "city.json")
 	file.writeText(json)
+	cityFile.writeText(city)
 }
