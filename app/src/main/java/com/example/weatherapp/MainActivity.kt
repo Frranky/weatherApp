@@ -3,6 +3,7 @@ package com.example.weatherapp
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.fragment.app.FragmentTransaction
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var binding: ActivityMainBinding
 	private lateinit var data: ArrayList<ForecastModel>
 	private val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
+	private var searchFlag = false
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
@@ -91,6 +93,18 @@ class MainActivity : AppCompatActivity() {
 			val manager = supportFragmentManager
 			val transaction: FragmentTransaction = manager.beginTransaction()
 			myDialogFragment.show(transaction, "dialog")
+		}
+
+		binding.toolbar.explore.setOnClickListener {
+			if(!searchFlag) {
+				searchFlag = true
+				binding.searchBar.visibility = View.VISIBLE
+				binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.down))
+				return@setOnClickListener
+			}
+			searchFlag = false
+			binding.searchBar.visibility = View.INVISIBLE
+			binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.up))
 		}
 
 		binding.searchButton.setOnClickListener {
