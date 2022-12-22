@@ -9,12 +9,15 @@ import com.example.weatherapp.data.model.ForecastModel
 import com.google.gson.GsonBuilder
 import java.io.File
 import java.io.FileInputStream
+import java.text.SimpleDateFormat
+import java.util.Date
 
-fun getData(currentDate: Long, context: Context, name: String, flag: Boolean = true): Pair<ArrayList<ForecastModel>, Long> {
+fun getData(context: Context, name: String, flag: Boolean = true): Pair<ArrayList<ForecastModel>, Long> {
 	val path = context.filesDir
 	val letDirectory = File(path, "json")
 	val file = File(letDirectory, "data.json")
 	val geocode = toGeocodeModel(getGeocode(name))
+	val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 
 	if(file.exists()) {
 		val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })

@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
 	private lateinit var data: ArrayList<ForecastModel>
-	private val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 	private var searchFlag = false
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
 		GlobalScope.launch {
 			val name = getCityName(context)
-			val response = getData(currentDate, context, name)
+			val response = getData(context, name)
 			data = response.first
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
@@ -143,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			val response = getData(currentDate, context, name, false)
+			val response = getData(context, name, false)
 			data = response.first
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
@@ -157,6 +156,7 @@ class MainActivity : AppCompatActivity() {
 			launch(Dispatchers.Main) {
 				binding.chart.data = LineData(dataset)
 				binding.fetchText.text = "Last fetched: $fetchDate"
+				binding.toolbar.textView.text = name
 				binding.chart.invalidate()
 			}
 		}
