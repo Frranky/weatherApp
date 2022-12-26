@@ -12,8 +12,8 @@ class AboutDialogFragment : DialogFragment() {
 			val builder = AlertDialog.Builder(it)
 			builder.setTitle("About")
 				.setMessage("It's weather app dude.")
-				.setPositiveButton("OK") {
-						dialog, id ->  dialog.cancel()
+				.setPositiveButton("OK") { dialog, id ->
+					dialog.cancel()
 				}
 			builder.create()
 		} ?: throw IllegalStateException("Activity cannot be null")

@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
 
-			for(i in 0 until data.size) {
+			for (i in 0 until data.size) {
 				entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
 			}
 			val dataset = LineDataSet(entries, "Temperature")
@@ -68,20 +67,23 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		binding.navView.setOnItemSelectedListener {
-			when(it.itemId) {
-				R.id.temperature 	-> {
+			when (it.itemId) {
+				R.id.temperature -> {
 					setTempChart("Temperature")
 					true
 				}
-				R.id.wind 			-> {
+
+				R.id.wind        -> {
 					setTempChart("Wind (m/sec.)")
 					true
 				}
-				R.id.humidity 			-> {
+
+				R.id.humidity    -> {
 					setTempChart("Humidity (%)")
 					true
 				}
-				else 				-> true
+
+				else             -> true
 			}
 		}
 
@@ -93,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 		}
 
 		binding.toolbar.explore.setOnClickListener {
-			if(!searchFlag) {
+			if (!searchFlag) {
 				searchFlag = true
 				binding.searchBar.visibility = View.VISIBLE
 				binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.down))
@@ -111,21 +113,16 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun setTempChart(name: String) {
-		val entries = arrayListOf<Entry>()
-
-		when(name) {
-			"Temperature" ->
-				for(i in 0 until data.size) {
-					entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
+		val entries = data.mapIndexed { index, forecastModel ->
+			Entry(
+				index.toFloat(),
+				when (name) {
+					"Temperature"   -> forecastModel.temp.toFloat()
+					"Wind (m/sec.)" -> forecastModel.wind_speed.toFloat()
+					"Humidity (%)"  -> forecastModel.humidity.toFloat()
+					else            -> throw IllegalArgumentException("Unknown parameter name:$name")
 				}
-			"Wind (m/sec.)" ->
-				for(i in 0 until data.size) {
-					entries.add(Entry(i.toFloat(), data[i].wind_speed.toFloat()))
-				}
-			"Humidity (%)" ->
-				for(i in 0 until data.size) {
-					entries.add(Entry(i.toFloat(), data[i].humidity.toFloat()))
-				}
+			)
 		}
 
 		val dataset = LineDataSet(entries, name)
@@ -147,7 +144,7 @@ class MainActivity : AppCompatActivity() {
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
 			val entries = arrayListOf<Entry>()
 
-			for(i in 0 until data.size) {
+			for (i in 0 until data.size) {
 				entries.add(Entry(i.toFloat(), data[i].temp.toFloat()))
 			}
 			val dataset = LineDataSet(entries, "Temperature")

@@ -19,10 +19,10 @@ fun getData(context: Context, name: String, flag: Boolean = true): Pair<ArrayLis
 	val geocode = toGeocodeModel(getGeocode(name))
 	val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
 
-	if(file.exists()) {
+	if (file.exists()) {
 		val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
 
-		if(currentDate - cash.second < 600 && flag) // Почему-то не работает
+		if (currentDate - cash.second < 600 && flag) // Почему-то не работает
 			return cash
 	}
 
@@ -36,7 +36,7 @@ fun getCityName(context: Context): String {
 	val letDirectory = File(path, "json")
 	val file = File(letDirectory, "city.json")
 
-	if(file.exists()) {
+	if (file.exists()) {
 		return FileInputStream(file).bufferedReader().use { it.readText() }
 	}
 	return "Moscow"
