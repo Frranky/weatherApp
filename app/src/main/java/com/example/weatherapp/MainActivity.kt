@@ -41,8 +41,8 @@ class MainActivity : AppCompatActivity() {
 		GlobalScope.launch {
 			val name = getCityName(context)
 			val response = getData(context, name)
-			data = response.first
-			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
+			data = response.data
+			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
 
 			for (i in 0 until data.size) {
@@ -140,8 +140,8 @@ class MainActivity : AppCompatActivity() {
 
 		GlobalScope.launch {
 			val response = getData(context, name, false)
-			data = response.first
-			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.second)
+			data = response.data
+			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
 
 			for (i in 0 until data.size) {

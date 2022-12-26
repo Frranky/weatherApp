@@ -1,6 +1,7 @@
 package com.example.weatherapp.data.mapper
 
 import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.data.model.ResponseModel
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -19,7 +20,7 @@ fun toForecastModel(jsonArray: JSONArray): ArrayList<ForecastModel> {
 	return result
 }
 
-fun toForecastModel(text: String): Pair<ArrayList<ForecastModel>, Long> {
+fun toForecastModel(text: String): ResponseModel {
 	val jsonObject = JSONObject(text)
 	var result: ArrayList<ForecastModel> = arrayListOf()
 	val first = jsonObject.getJSONArray("first")
@@ -34,5 +35,5 @@ fun toForecastModel(text: String): Pair<ArrayList<ForecastModel>, Long> {
 		val date 		= first.getJSONObject(i).getString("date")
 		result.add(ForecastModel(temp, feels_like, weather, wind_speed, humidity, date))
 	}
-	return result to second
+	return ResponseModel(result, second)
 }

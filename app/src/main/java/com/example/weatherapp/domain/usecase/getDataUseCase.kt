@@ -6,13 +6,14 @@ import com.example.weatherapp.data.api.getWeather
 import com.example.weatherapp.data.mapper.toForecastModel
 import com.example.weatherapp.data.mapper.toGeocodeModel
 import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.data.model.ResponseModel
 import com.google.gson.GsonBuilder
 import java.io.File
 import java.io.FileInputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 
-fun getData(context: Context, name: String, flag: Boolean = true): Pair<ArrayList<ForecastModel>, Long> {
+fun getData(context: Context, name: String, flag: Boolean = true): ResponseModel {
 	val path = context.filesDir
 	val letDirectory = File(path, "json")
 	val file = File(letDirectory, "data.json")
@@ -22,13 +23,13 @@ fun getData(context: Context, name: String, flag: Boolean = true): Pair<ArrayLis
 	if (file.exists()) {
 		val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
 
-		if (currentDate - cash.second < 600 && flag) // Почему-то не работает
+		if (currentDate - cash.timestamp < 600000 && flag) // Почему-то не работает
 			return cash
 	}
 
 	val data = toForecastModel(getWeather(geocode.lat, geocode.lon))
 	saveData(name, data, currentDate, context)
-	return data to currentDate
+	return ResponseModel(data, currentDate)
 }
 
 fun getCityName(context: Context): String {
