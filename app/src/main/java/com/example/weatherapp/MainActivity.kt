@@ -5,6 +5,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
+import com.example.weatherapp.data.mapper.toEntry
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.getCityName
@@ -115,19 +116,7 @@ class MainActivity : AppCompatActivity() {
 	}
 
 	private fun setTempChart(name: String) {
-		val entries = data.mapIndexed { index, forecastModel ->
-			Entry(
-				index.toFloat(),
-				when (name) {
-					"Temperature"   -> forecastModel.temp.toFloat()
-					"Wind (m/sec.)" -> forecastModel.wind_speed.toFloat()
-					"Humidity (%)"  -> forecastModel.humidity.toFloat()
-					else            -> throw IllegalArgumentException("Unknown parameter name:$name")
-				}
-			)
-		}
-
-		val dataset = LineDataSet(entries, name)
+		val dataset = LineDataSet(toEntry(name, data), name)
 		dataset.axisDependency = YAxis.AxisDependency.LEFT
 		binding.chart.data = LineData(dataset)
 		binding.chart.xAxis.valueFormatter = formatter
