@@ -15,11 +15,13 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
+@OptIn(DelicateCoroutinesApi::class)
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
-			return SimpleDateFormat("MM.dd HH:mm").format(SimpleDateFormat("yyyy-MM-dd HH:mm").parse(data[value.toInt()].date))
+			return SimpleDateFormat("MM.dd HH:mm").format(SimpleDateFormat("yyyy-MM-dd HH:mm").parse(data[value.toInt()].date)!!)
 		}
 	}
 

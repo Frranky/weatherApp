@@ -1,12 +1,11 @@
 package com.example.weatherapp.data.api
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonParser
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.Response
-import org.json.JSONArray
-import org.json.JSONObject
 
-fun getWeather(lat: String, lon: String): JSONArray {
+fun getWeather(lat: String, lon: String): JsonArray {
 	val client = OkHttpClient()
 	val request = Request.Builder()
 		.url("https://api.openweathermap.org/data/2.5/forecast?" +
@@ -17,11 +16,6 @@ fun getWeather(lat: String, lon: String): JSONArray {
 		.get()
 		.build()
 
-	return getResponse(client.newCall(request).execute())
-}
-
-private fun getResponse(response: Response): JSONArray {
-	val jsonData = response.body()!!.string()
-	val jsonObject = JSONObject(jsonData)
-	return jsonObject.getJSONArray("list")
+	val jsonData = client.newCall(request).execute().body()!!.string()
+	return JsonParser.parseString(jsonData).asJsonObject.get("list").asJsonArray
 }
