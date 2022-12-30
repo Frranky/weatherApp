@@ -1,5 +1,6 @@
 package com.example.weatherapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @OptIn(DelicateCoroutinesApi::class)
+@SuppressLint("SimpleDateFormat", "SetTextI18n")
 class MainActivity : AppCompatActivity() {
 
 	private lateinit var binding: ActivityMainBinding

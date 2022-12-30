@@ -1,5 +1,6 @@
 package com.example.weatherapp.domain.usecase
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.example.weatherapp.data.api.getGeocode
 import com.example.weatherapp.data.api.getWeather
@@ -14,11 +15,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
+@SuppressLint("SimpleDateFormat")
 fun getData(context: Context, name: String, flag: Boolean = true): ResponseModel {
 	val path = context.filesDir
 	val letDirectory = File(path, "json")
 	val file = File(letDirectory, "data.json")
-	val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date())).time
+	val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
 
 	if (file.exists()) {
 		val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })

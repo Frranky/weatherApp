@@ -13,7 +13,7 @@ import com.google.gson.JsonParser
 import java.lang.reflect.Type
 
 fun toForecastModel(jsonArray: JsonArray): ArrayList<ForecastModel> {
-	var result: ArrayList<ForecastModel> = arrayListOf()
+	val result: ArrayList<ForecastModel> = arrayListOf()
 
 	for (i in 0 until jsonArray.size()) {
 		val gSon = GsonBuilder().registerTypeAdapter(ForecastModel::class.java, ForecastDeserializer()).create()
@@ -24,7 +24,7 @@ fun toForecastModel(jsonArray: JsonArray): ArrayList<ForecastModel> {
 
 fun toForecastModel(text: String): ResponseModel {
 	val jsonObject = JsonParser.parseString(text).asJsonObject
-	var result: ArrayList<ForecastModel> = arrayListOf()
+	val result: ArrayList<ForecastModel> = arrayListOf()
 	val first = jsonObject.get("first").asJsonArray
 	val second = jsonObject.get("second").asLong
 
@@ -41,13 +41,13 @@ private class ForecastDeserializer : JsonDeserializer<ForecastModel> {
 
 		val main = json.getAsJsonObject("main")
 
-		val temp 		= main.get("temp").asString
-		val feels_like 	= main.get("feels_like").asString
-		val weather		= json.getAsJsonArray("weather").get(0).asJsonObject.get("description").asString
-		val wind_speed 	= json.getAsJsonObject("wind").get("speed").asString
-		val humidity 	= main.get("humidity").asString
-		val date 		= json.get("dt_txt").asString
+		val temp = main.get("temp").asString
+		val feelsLike = main.get("feels_like").asString
+		val weather = json.getAsJsonArray("weather").get(0).asJsonObject.get("description").asString
+		val windSpeed = json.getAsJsonObject("wind").get("speed").asString
+		val humidity = main.get("humidity").asString
+		val date = json.get("dt_txt").asString
 
-		return ForecastModel(temp, feels_like, weather, wind_speed, humidity, date)
+		return ForecastModel(temp, feelsLike, weather, windSpeed, humidity, date)
 	}
 }
