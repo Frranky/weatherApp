@@ -9,8 +9,8 @@ import androidx.fragment.app.FragmentTransaction
 import com.example.weatherapp.data.mapper.toEntry
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
-import com.example.weatherapp.domain.usecase.getCityName
-import com.example.weatherapp.domain.usecase.getData
+import com.example.weatherapp.domain.usecase.GetCityNameUseCase
+import com.example.weatherapp.domain.usecase.GetDataUseCase
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -31,6 +31,9 @@ class MainActivity : AppCompatActivity() {
 	private lateinit var data: ArrayList<ForecastModel>
 	private var searchFlag = false
 
+	private val getCityNameUseCase = GetCityNameUseCase()
+	private val getDataUseCase = GetDataUseCase()
+
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
 			return SimpleDateFormat("MM.dd HH:mm").format(SimpleDateFormat("yyyy-MM-dd HH:mm").parse(data[value.toInt()].date)!!)
@@ -44,8 +47,8 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			val name = getCityName(context)
-			val response = getData(context, name)
+			val name = getCityNameUseCase(context)
+			val response = getDataUseCase(context, name)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
@@ -132,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 		val context = this.baseContext
 
 		GlobalScope.launch {
-			val response = getData(context, name, false)
+			val response = getDataUseCase(context, name, false)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
