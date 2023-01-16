@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 
 @OptIn(DelicateCoroutinesApi::class)
 @SuppressLint("SimpleDateFormat", "StaticFieldLeak", "SetTextI18n")
@@ -42,8 +43,9 @@ class MainActivityViewModel(
 
 	init {
 		GlobalScope.launch {
+			val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
 			val name = getCityNameUseCase(context)
-			val response = getDataUseCase(context, name)
+			val response = getDataUseCase(context, name, currentDate)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
@@ -72,7 +74,8 @@ class MainActivityViewModel(
 
 	fun fetchData(name: String) {
 		GlobalScope.launch {
-			val response = getDataUseCase(context, name, false)
+			val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
+			val response = getDataUseCase(context, name, currentDate, false)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
