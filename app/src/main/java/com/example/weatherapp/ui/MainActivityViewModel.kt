@@ -1,11 +1,10 @@
-package com.example.weatherapp
+package com.example.weatherapp.ui
 
 import android.annotation.SuppressLint
-import android.os.Bundle
+import android.content.Context
 import android.view.View
-import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.data.mapper.toEntry
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
@@ -24,12 +23,13 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @OptIn(DelicateCoroutinesApi::class)
-@SuppressLint("SimpleDateFormat", "SetTextI18n")
-class MainActivity : AppCompatActivity() {
+@SuppressLint("SimpleDateFormat", "StaticFieldLeak", "SetTextI18n")
+class MainActivityViewModel(
+	private val binding: ActivityMainBinding,
+	private val context: Context,
+) : ViewModel() {
 
-	private lateinit var binding: ActivityMainBinding
 	private lateinit var data: ArrayList<ForecastModel>
-	private var searchFlag = false
 
 	private val getCityNameUseCase = GetCityNameUseCase()
 	private val getDataUseCase = GetDataUseCase()
@@ -40,12 +40,7 @@ class MainActivity : AppCompatActivity() {
 		}
 	}
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		binding = ActivityMainBinding.inflate(layoutInflater)
-		supportFragmentManager.beginTransaction().add(R.id.container, PreLoaderFragment()).commit()
-		val context = this.baseContext
-
+	init {
 		GlobalScope.launch {
 			val name = getCityNameUseCase(context)
 			val response = getDataUseCase(context, name)
@@ -73,67 +68,9 @@ class MainActivity : AppCompatActivity() {
 				binding.chart.invalidate()
 			}
 		}
-
-		binding.navView.setOnItemSelectedListener {
-			when (it.itemId) {
-				R.id.temperature -> {
-					setTempChart("Temperature")
-					true
-				}
-
-				R.id.wind        -> {
-					setTempChart("Wind (m/sec.)")
-					true
-				}
-
-				R.id.humidity    -> {
-					setTempChart("Humidity (%)")
-					true
-				}
-
-				else             -> true
-			}
-		}
-
-		binding.toolbar.information.setOnClickListener {
-			val myDialogFragment = AboutDialogFragment()
-			val manager = supportFragmentManager
-			val transaction: FragmentTransaction = manager.beginTransaction()
-			myDialogFragment.show(transaction, "dialog")
-		}
-
-		binding.toolbar.explore.setOnClickListener {
-			if (!searchFlag) {
-				searchFlag = true
-				binding.searchBar.visibility = View.VISIBLE
-				binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.down))
-				return@setOnClickListener
-			}
-			searchFlag = false
-			binding.searchBar.visibility = View.INVISIBLE
-			binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.up))
-		}
-
-		binding.searchButton.setOnClickListener {
-			fetchData(binding.searchText.text.toString())
-		}
-		setContentView(binding.root)
 	}
 
-	private fun setTempChart(name: String) {
-		val dataset = LineDataSet(toEntry(name, data), name)
-		dataset.axisDependency = YAxis.AxisDependency.LEFT
-		binding.chart.data = LineData(dataset)
-		binding.chart.xAxis.valueFormatter = formatter
-		binding.chart.xAxis.granularity = 1f
-		binding.chart.xAxis.textSize = 5f
-		binding.chart.axisLeft.setDrawGridLines(false)
-		binding.chart.invalidate()
-	}
-
-	private fun fetchData(name: String) {
-		val context = this.baseContext
-
+	fun fetchData(name: String) {
 		GlobalScope.launch {
 			val response = getDataUseCase(context, name, false)
 			data = response.data
@@ -153,5 +90,27 @@ class MainActivity : AppCompatActivity() {
 				binding.chart.invalidate()
 			}
 		}
+	}
+
+	fun setTempChart(name: String) {
+		val dataset = LineDataSet(toEntry(name, data), name)
+		dataset.axisDependency = YAxis.AxisDependency.LEFT
+		binding.chart.data = LineData(dataset)
+		binding.chart.xAxis.valueFormatter = formatter
+		binding.chart.xAxis.granularity = 1f
+		binding.chart.xAxis.textSize = 5f
+		binding.chart.axisLeft.setDrawGridLines(false)
+		binding.chart.invalidate()
+	}
+}
+
+class MainActivityViewModelFactory(
+	private val binding: ActivityMainBinding,
+	private val context: Context,
+) : ViewModelProvider.Factory {
+
+	@Suppress("UNCHECKED_CAST")
+	override fun <T : ViewModel> create(modelClass: Class<T>): T {
+		return MainActivityViewModel(binding, context) as T
 	}
 }

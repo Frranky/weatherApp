@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".PreLoaderFragment"
+	tools:context=".ui.PreLoaderFragment"
 	android:background="@color/white">
 
 	<ImageView
