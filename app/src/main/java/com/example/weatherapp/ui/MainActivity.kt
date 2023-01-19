@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.presentation.MainActivityViewModel
+import com.example.weatherapp.presentation.MainActivityViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
