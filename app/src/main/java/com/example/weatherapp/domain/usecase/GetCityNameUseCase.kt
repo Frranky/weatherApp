@@ -1,7 +1,7 @@
 package com.example.weatherapp.domain.usecase
 
 import android.content.Context
-import com.example.weatherapp.domain.repositiry.LocalDataRepository
+import com.example.weatherapp.data.repositiry.LocalDataRepository
 
 class GetCityNameUseCase {
 

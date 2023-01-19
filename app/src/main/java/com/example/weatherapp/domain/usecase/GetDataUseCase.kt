@@ -7,7 +7,7 @@ import com.example.weatherapp.data.api.WeatherApi
 import com.example.weatherapp.data.mapper.toForecastModel
 import com.example.weatherapp.data.mapper.toGeocodeModel
 import com.example.weatherapp.data.model.ResponseModel
-import com.example.weatherapp.domain.repositiry.LocalDataRepository
+import com.example.weatherapp.data.repositiry.LocalDataRepository
 import java.util.concurrent.TimeUnit
 
 class GetDataUseCase {

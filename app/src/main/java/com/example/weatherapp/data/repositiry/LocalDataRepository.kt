@@ -1,4 +1,4 @@
-package com.example.weatherapp.domain.repositiry
+package com.example.weatherapp.data.repositiry
 
 import android.content.Context
 import com.example.weatherapp.data.model.ForecastModel
