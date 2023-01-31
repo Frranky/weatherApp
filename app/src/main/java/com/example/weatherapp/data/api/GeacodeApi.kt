@@ -5,12 +5,12 @@ import com.google.gson.JsonParser.parseString
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
-class GeocodeApi : OpenWeatherApiInterface {
+class GeocodeApi {
 
-	override fun get(vararg elements: String): JsonArray {
+	fun get(vararg elements: String): JsonArray {
 		val client = OkHttpClient()
 		val request = Request.Builder()
-			.url("http://api.openweathermap.org/geo/1.0/direct?q=${elements[0]},RU&limit=1&appid=$key")
+			.url("http://api.openweathermap.org/geo/1.0/direct?q=${elements[0]},RU&limit=1&appid=${OpenWeatherConfigProvider.key}")
 			.get()
 			.build()
 
