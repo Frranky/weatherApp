@@ -1,14 +1,16 @@
-package com.example.weatherapp.data.repositiry
+package com.example.weatherapp.data.repository
 
 import android.content.Context
 import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.domain.repository.CityRepository
+import com.example.weatherapp.domain.repository.WeatherForecastRepository
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileInputStream
 
-class LocalDataRepository {
+class LocalDataRepository: CityRepository, WeatherForecastRepository {
 
-	fun getCity(context: Context): String {
+	override fun city(context: Context): String {
 		val path = context.filesDir
 		val letDirectory = File(path, "json")
 		val file = File(letDirectory, "city.json")
@@ -19,7 +21,7 @@ class LocalDataRepository {
 		return "Moscow"
 	}
 
-	fun getData(context: Context): String {
+	override fun weatherForecast(context: Context): String {
 		val path = context.filesDir
 		val letDirectory = File(path, "json")
 		val file = File(letDirectory, "data.json")
@@ -39,4 +41,6 @@ class LocalDataRepository {
 		file.writeText(json)
 		cityFile.writeText(city)
 	}
+
+
 }

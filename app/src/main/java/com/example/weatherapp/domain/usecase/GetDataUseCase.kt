@@ -7,7 +7,7 @@ import com.example.weatherapp.data.api.WeatherApi
 import com.example.weatherapp.data.mapper.toForecastModel
 import com.example.weatherapp.data.mapper.toGeocodeModel
 import com.example.weatherapp.data.model.ResponseModel
-import com.example.weatherapp.data.repositiry.LocalDataRepository
+import com.example.weatherapp.data.repository.LocalDataRepository
 import java.util.concurrent.TimeUnit
 
 class GetDataUseCase {
@@ -18,7 +18,7 @@ class GetDataUseCase {
 
 	@SuppressLint("SimpleDateFormat")
 	operator fun invoke(context: Context, name: String, currentDate: Long, flag: Boolean = true): ResponseModel {
-		val fileData = localDataRepository.getData(context)
+		val fileData = localDataRepository.weatherForecast(context)
 
 		if (fileData != "none") {
 			val cash = toForecastModel(fileData)
