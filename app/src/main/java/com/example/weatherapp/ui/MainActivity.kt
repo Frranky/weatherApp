@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
+import com.example.weatherapp.data.repository.LocalDataRepository
 import com.example.weatherapp.databinding.ActivityMainBinding
+import com.example.weatherapp.domain.usecase.GetCityNameUseCase
+import com.example.weatherapp.domain.usecase.GetDataUseCase
 import com.example.weatherapp.presentation.MainActivityViewModel
 import com.example.weatherapp.presentation.MainActivityViewModelFactory
 
@@ -21,10 +24,12 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		_binding = ActivityMainBinding.inflate(layoutInflater)
 		supportFragmentManager.beginTransaction().add(R.id.container, PreLoaderFragment()).commit()
-		val context = this.baseContext
+		val localDataRepository = LocalDataRepository(this.baseContext)
+		val getCityNameUseCase = GetCityNameUseCase(localDataRepository)
+		val getDataUseCase = GetDataUseCase(localDataRepository)
 
 		val mainActivityViewModel: MainActivityViewModel =
-			ViewModelProvider(this, MainActivityViewModelFactory(binding, context))[MainActivityViewModel::class.java]
+			ViewModelProvider(this, MainActivityViewModelFactory(binding, getCityNameUseCase, getDataUseCase))[MainActivityViewModel::class.java]
 
 		binding.navView.setOnItemSelectedListener {
 			when (it.itemId) {
@@ -58,12 +63,12 @@ class MainActivity : AppCompatActivity() {
 			if (!searchFlag) {
 				searchFlag = true
 				binding.searchBar.visibility = View.VISIBLE
-				binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.down))
+				binding.searchBar.startAnimation(AnimationUtils.loadAnimation(this.baseContext, R.anim.down))
 				return@setOnClickListener
 			}
 			searchFlag = false
 			binding.searchBar.visibility = View.INVISIBLE
-			binding.searchBar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.up))
+			binding.searchBar.startAnimation(AnimationUtils.loadAnimation(this.baseContext, R.anim.up))
 		}
 
 		binding.searchButton.setOnClickListener {

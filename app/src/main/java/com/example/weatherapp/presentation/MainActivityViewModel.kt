@@ -1,7 +1,6 @@
 package com.example.weatherapp.presentation
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -27,13 +26,12 @@ import java.util.Date
 @SuppressLint("SimpleDateFormat", "StaticFieldLeak", "SetTextI18n")
 class MainActivityViewModel(
 	private val binding: ActivityMainBinding,
-	private val context: Context,
+	private val getCityNameUseCase: GetCityNameUseCase,
+	private val getDataUseCase: GetDataUseCase,
 ) : ViewModel() {
 
 	private lateinit var data: ArrayList<ForecastModel>
 
-	private val getCityNameUseCase = GetCityNameUseCase()
-	private val getDataUseCase = GetDataUseCase()
 	private val entryMapper = EntryMapper()
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
@@ -45,8 +43,8 @@ class MainActivityViewModel(
 	init {
 		GlobalScope.launch {
 			val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
-			val name = getCityNameUseCase(context)
-			val response = getDataUseCase(context, name, currentDate)
+			val name = getCityNameUseCase()
+			val response = getDataUseCase(name, currentDate)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
@@ -76,7 +74,7 @@ class MainActivityViewModel(
 	fun fetchData(name: String) {
 		GlobalScope.launch {
 			val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
-			val response = getDataUseCase(context, name, currentDate, false)
+			val response = getDataUseCase(name, currentDate, false)
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()
@@ -110,11 +108,12 @@ class MainActivityViewModel(
 
 class MainActivityViewModelFactory(
 	private val binding: ActivityMainBinding,
-	private val context: Context,
+	private val getCityNameUseCase: GetCityNameUseCase,
+	private val getDataUseCase: GetDataUseCase,
 ) : ViewModelProvider.Factory {
 
 	@Suppress("UNCHECKED_CAST")
 	override fun <T : ViewModel> create(modelClass: Class<T>): T {
-		return MainActivityViewModel(binding, context) as T
+		return MainActivityViewModel(binding, getCityNameUseCase, getDataUseCase) as T
 	}
 }

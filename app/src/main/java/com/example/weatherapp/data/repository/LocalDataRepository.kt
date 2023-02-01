@@ -14,12 +14,12 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 
-class LocalDataRepository : CityRepository, WeatherForecastRepository {
+class LocalDataRepository(private val context: Context) : CityRepository, WeatherForecastRepository {
 
 	private val weatherApi = WeatherApi()
 	private val geocodeApi = GeocodeApi()
 
-	override fun city(context: Context): String {
+	override fun city(): String {
 		val path = context.filesDir
 		val letDirectory = File(path, "json")
 		val file = File(letDirectory, "city.json")
@@ -30,7 +30,7 @@ class LocalDataRepository : CityRepository, WeatherForecastRepository {
 		return "Moscow"
 	}
 
-	override fun weatherForecast(context: Context, name: String, currentDate: Long, flag: Boolean): ResponseModel {
+	override fun weatherForecast(name: String, currentDate: Long, flag: Boolean): ResponseModel {
 		val path = context.filesDir
 		val letDirectory = File(path, "json")
 		val file = File(letDirectory, "data.json")
