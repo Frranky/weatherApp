@@ -5,11 +5,11 @@ import android.content.Context
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.weatherapp.data.mapper.toEntry
 import com.example.weatherapp.data.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.GetCityNameUseCase
 import com.example.weatherapp.domain.usecase.GetDataUseCase
+import com.example.weatherapp.presentation.mapper.EntryMapper
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
@@ -34,6 +34,7 @@ class MainActivityViewModel(
 
 	private val getCityNameUseCase = GetCityNameUseCase()
 	private val getDataUseCase = GetDataUseCase()
+	private val entryMapper = EntryMapper()
 
 	private var formatter: ValueFormatter = object : ValueFormatter() {
 		override fun getAxisLabel(value: Float, axis: AxisBase): String {
@@ -96,7 +97,7 @@ class MainActivityViewModel(
 	}
 
 	fun setTempChart(name: String) {
-		val dataset = LineDataSet(toEntry(name, data), name)
+		val dataset = LineDataSet(entryMapper(name, data), name)
 		dataset.axisDependency = YAxis.AxisDependency.LEFT
 		binding.chart.data = LineData(dataset)
 		binding.chart.xAxis.valueFormatter = formatter
