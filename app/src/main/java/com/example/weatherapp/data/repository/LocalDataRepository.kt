@@ -3,8 +3,8 @@ package com.example.weatherapp.data.repository
 import android.content.Context
 import com.example.weatherapp.data.api.GeocodeApi
 import com.example.weatherapp.data.api.WeatherApi
-import com.example.weatherapp.data.mapper.toForecastModel
-import com.example.weatherapp.data.mapper.toGeocodeModel
+import com.example.weatherapp.data.mapper.ForecastMapper
+import com.example.weatherapp.data.mapper.GeocodeMapper
 import com.example.weatherapp.domain.model.ForecastModel
 import com.example.weatherapp.data.model.ResponseModel
 import com.example.weatherapp.domain.repository.CityRepository
@@ -18,6 +18,8 @@ class LocalDataRepository(private val context: Context) : CityRepository, Weathe
 
 	private val weatherApi = WeatherApi()
 	private val geocodeApi = GeocodeApi()
+	private val forecastMapper = ForecastMapper()
+	private val geocodeMapper = GeocodeMapper()
 
 	override fun city(): String {
 		val path = context.filesDir
@@ -36,14 +38,14 @@ class LocalDataRepository(private val context: Context) : CityRepository, Weathe
 		val file = File(letDirectory, "data.json")
 
 		if (file.exists()) {
-			val cash = toForecastModel(FileInputStream(file).bufferedReader().use { it.readText() })
+			val cash = forecastMapper(FileInputStream(file).bufferedReader().use { it.readText() })
 
 			if (currentDate - cash.timestamp < TimeUnit.MINUTES.toMillis(10) && flag)
 				return cash
 		}
 
-		val geocode = toGeocodeModel(geocodeApi.get(name))
-		val data = toForecastModel(weatherApi.get(geocode.lat, geocode.lon))
+		val geocode = geocodeMapper(geocodeApi.get(name))
+		val data = forecastMapper(weatherApi.get(geocode.lat, geocode.lon))
 		saveData(name, data, currentDate, context)
 		return ResponseModel(data, currentDate)
 	}

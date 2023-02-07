@@ -12,27 +12,32 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import java.lang.reflect.Type
 
-fun toForecastModel(jsonArray: JsonArray): ArrayList<ForecastModel> {
-	val result: ArrayList<ForecastModel> = arrayListOf()
+class ForecastMapper {
 
-	for (i in 0 until jsonArray.size()) {
-		val gSon = GsonBuilder().registerTypeAdapter(ForecastModel::class.java, ForecastDeserializer()).create()
-		result.add(gSon.fromJson(jsonArray.get(i), ForecastModel::class.java))
+	operator fun invoke(jsonArray: JsonArray): ArrayList<ForecastModel> {
+		val result: ArrayList<ForecastModel> = arrayListOf()
+
+		for (i in 0 until jsonArray.size()) {
+			val gSon = GsonBuilder().registerTypeAdapter(ForecastModel::class.java, ForecastDeserializer()).create()
+			result.add(gSon.fromJson(jsonArray.get(i), ForecastModel::class.java))
+		}
+		return result
 	}
-	return result
+
+	operator fun invoke(text: String): ResponseModel {
+		val jsonObject = JsonParser.parseString(text).asJsonObject
+		val result: ArrayList<ForecastModel> = arrayListOf()
+		val first = jsonObject.get("first").asJsonArray
+		val second = jsonObject.get("second").asLong
+
+		for (i in 0 until first.size())
+			result.add(Gson().fromJson(first.get(i), ForecastModel::class.java))
+
+		return ResponseModel(result, second)
+	}
 }
 
-fun toForecastModel(text: String): ResponseModel {
-	val jsonObject = JsonParser.parseString(text).asJsonObject
-	val result: ArrayList<ForecastModel> = arrayListOf()
-	val first = jsonObject.get("first").asJsonArray
-	val second = jsonObject.get("second").asLong
 
-	for (i in 0 until first.size())
-		result.add(Gson().fromJson(first.get(i), ForecastModel::class.java))
-
-	return ResponseModel(result, second)
-}
 
 private class ForecastDeserializer : JsonDeserializer<ForecastModel> {
 
