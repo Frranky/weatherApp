@@ -1,6 +1,6 @@
 package com.example.weatherapp.data.mapper
 
-import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.domain.model.ForecastModel
 import com.example.weatherapp.data.model.ResponseModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

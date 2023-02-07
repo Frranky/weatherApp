@@ -1,4 +1,4 @@
-package com.example.weatherapp.data.model
+package com.example.weatherapp.domain.model
 
 data class ForecastModel(
 	val temp: String,

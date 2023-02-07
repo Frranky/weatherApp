@@ -1,6 +1,6 @@
 package com.example.weatherapp.presentation.mapper
 
-import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.domain.model.ForecastModel
 import com.github.mikephil.charting.data.Entry
 
 class EntryMapper {

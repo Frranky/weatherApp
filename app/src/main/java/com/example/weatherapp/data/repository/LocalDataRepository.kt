@@ -5,7 +5,7 @@ import com.example.weatherapp.data.api.GeocodeApi
 import com.example.weatherapp.data.api.WeatherApi
 import com.example.weatherapp.data.mapper.toForecastModel
 import com.example.weatherapp.data.mapper.toGeocodeModel
-import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.domain.model.ForecastModel
 import com.example.weatherapp.data.model.ResponseModel
 import com.example.weatherapp.domain.repository.CityRepository
 import com.example.weatherapp.domain.repository.WeatherForecastRepository

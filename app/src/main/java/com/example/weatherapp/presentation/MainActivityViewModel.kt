@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.weatherapp.data.model.ForecastModel
+import com.example.weatherapp.domain.model.ForecastModel
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.GetCityNameUseCase
-import com.example.weatherapp.domain.usecase.GetDataUseCase
+import com.example.weatherapp.domain.usecase.GetWeatherForecastUseCase
 import com.example.weatherapp.presentation.mapper.EntryMapper
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
@@ -27,7 +27,7 @@ import java.util.Date
 class MainActivityViewModel(
 	private val binding: ActivityMainBinding,
 	private val getCityNameUseCase: GetCityNameUseCase,
-	private val getDataUseCase: GetDataUseCase,
+	private val getDataUseCase: GetWeatherForecastUseCase,
 ) : ViewModel() {
 
 	private lateinit var data: ArrayList<ForecastModel>
@@ -109,7 +109,7 @@ class MainActivityViewModel(
 class MainActivityViewModelFactory(
 	private val binding: ActivityMainBinding,
 	private val getCityNameUseCase: GetCityNameUseCase,
-	private val getDataUseCase: GetDataUseCase,
+	private val getDataUseCase: GetWeatherForecastUseCase,
 ) : ViewModelProvider.Factory {
 
 	@Suppress("UNCHECKED_CAST")

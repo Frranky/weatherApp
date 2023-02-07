@@ -1,6 +1,6 @@
 package com.example.weatherapp.data.mapper
 
-import com.example.weatherapp.data.model.GeocodeModel
+import com.example.weatherapp.domain.model.GeocodeModel
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 
