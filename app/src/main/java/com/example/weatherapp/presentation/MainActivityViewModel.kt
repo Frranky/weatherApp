@@ -75,6 +75,7 @@ class MainActivityViewModel(
 		GlobalScope.launch {
 			val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm").parse(SimpleDateFormat("yyyy-MM-dd HH:mm").format(Date()))!!.time
 			val response = getDataUseCase(name, currentDate, false)
+			if (response.timestamp == (-1).toLong()) return@launch
 			data = response.data
 			val fetchDate = SimpleDateFormat("MM.dd HH:mm").format(response.timestamp)
 			val entries = arrayListOf<Entry>()

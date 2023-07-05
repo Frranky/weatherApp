@@ -33,21 +33,26 @@ class LocalDataRepository(private val context: Context) : CityRepository, Weathe
 	}
 
 	override fun weatherForecast(name: String, currentDate: Long, flag: Boolean): ResponseModel {
-		val path = context.filesDir
-		val letDirectory = File(path, "json")
-		val file = File(letDirectory, "data.json")
+		try {
+			val path = context.filesDir
+			val letDirectory = File(path, "json")
+			val file = File(letDirectory, "data.json")
 
-		if (file.exists()) {
-			val cash = forecastMapper(FileInputStream(file).bufferedReader().use { it.readText() })
+			if (file.exists()) {
+				val cash = forecastMapper(FileInputStream(file).bufferedReader().use { it.readText() })
 
-			if (currentDate - cash.timestamp < TimeUnit.MINUTES.toMillis(10) && flag)
-				return cash
+				if (currentDate - cash.timestamp < TimeUnit.MINUTES.toMillis(10) && flag)
+					return cash
+			}
+
+			val geocode = geocodeMapper(geocodeApi.get(name))
+			val data = forecastMapper(weatherApi.get(geocode.lat, geocode.lon))
+			saveData(name, data, currentDate, context)
+			return ResponseModel(data, currentDate)
 		}
-
-		val geocode = geocodeMapper(geocodeApi.get(name))
-		val data = forecastMapper(weatherApi.get(geocode.lat, geocode.lon))
-		saveData(name, data, currentDate, context)
-		return ResponseModel(data, currentDate)
+		catch (e: Exception) {
+			return ResponseModel(arrayListOf(), -1)
+		}
 	}
 
 	private fun saveData(city: String, data: ArrayList<ForecastModel>, currentDate: Long, context: Context) {
