@@ -7,14 +7,14 @@ import com.example.weatherapp.data.mapper.ForecastMapper
 import com.example.weatherapp.data.mapper.GeocodeMapper
 import com.example.weatherapp.domain.model.ForecastModel
 import com.example.weatherapp.data.model.ResponseModel
-import com.example.weatherapp.domain.repository.CityRepository
-import com.example.weatherapp.domain.repository.WeatherForecastRepository
+import com.example.weatherapp.domain.repository.ICityRepository
+import com.example.weatherapp.domain.repository.IWeatherForecastRepository
 import com.google.gson.Gson
 import java.io.File
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
 
-class LocalDataRepository(private val context: Context) : CityRepository, WeatherForecastRepository {
+class LocalDataRepository(private val context: Context) : ICityRepository, IWeatherForecastRepository {
 
 	private val weatherApi = WeatherApi()
 	private val geocodeApi = GeocodeApi()

@@ -1,8 +1,8 @@
 package com.example.weatherapp.domain.usecase
 
-import com.example.weatherapp.data.repository.LocalDataRepository
+import com.example.weatherapp.domain.repository.ICityRepository
 
-class GetCityNameUseCase(private val localDataRepository: LocalDataRepository) {
+class GetCityNameUseCase(private val repository: ICityRepository) {
 
-	operator fun invoke() = localDataRepository.city()
+	operator fun invoke() = repository.city()
 }

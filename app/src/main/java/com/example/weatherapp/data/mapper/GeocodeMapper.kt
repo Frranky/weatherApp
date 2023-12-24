@@ -6,5 +6,6 @@ import com.google.gson.JsonArray
 
 class GeocodeMapper {
 
-	operator fun invoke(jsonObject: JsonArray): GeocodeModel = Gson().fromJson(jsonObject.get(0), GeocodeModel::class.java)
+	operator fun invoke(jsonObject: JsonArray): GeocodeModel =
+		Gson().fromJson(jsonObject.get(0), GeocodeModel::class.java)
 }

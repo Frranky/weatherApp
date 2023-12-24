@@ -1,6 +1,6 @@
 package com.example.weatherapp.domain.repository
 
-interface CityRepository {
+interface ICityRepository {
 
 	fun city(): String
 }

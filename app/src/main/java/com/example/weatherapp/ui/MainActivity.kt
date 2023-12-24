@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import com.example.weatherapp.R
+import com.example.weatherapp.data.repository.CurrentWeatherRepository
 import com.example.weatherapp.data.repository.LocalDataRepository
 import com.example.weatherapp.databinding.ActivityMainBinding
 import com.example.weatherapp.domain.usecase.GetCityNameUseCase
+import com.example.weatherapp.domain.usecase.GetCurrentWeatherUseCase
 import com.example.weatherapp.domain.usecase.GetWeatherForecastUseCase
 import com.example.weatherapp.presentation.MainActivityViewModel
 import com.example.weatherapp.presentation.MainActivityViewModelFactory
@@ -25,8 +27,10 @@ class MainActivity : AppCompatActivity() {
 		_binding = ActivityMainBinding.inflate(layoutInflater)
 		supportFragmentManager.beginTransaction().add(R.id.container, PreLoaderFragment()).commit()
 		val localDataRepository = LocalDataRepository(this.baseContext)
+		//val currentWeatherRepository = CurrentWeatherRepository()
 		val getCityNameUseCase = GetCityNameUseCase(localDataRepository)
 		val getDataUseCase = GetWeatherForecastUseCase(localDataRepository)
+		//val getCurrentWeatherUseCase = GetCurrentWeatherUseCase(currentWeatherRepository)
 
 		val mainActivityViewModel: MainActivityViewModel =
 			ViewModelProvider(this, MainActivityViewModelFactory(binding, getCityNameUseCase, getDataUseCase))[MainActivityViewModel::class.java]
