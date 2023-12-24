@@ -4,6 +4,6 @@ import com.example.weatherapp.data.repository.LocalDataRepository
 
 class GetWeatherForecastUseCase(private val localDataRepository: LocalDataRepository) {
 
-	operator fun invoke(name: String, currentDate: Long, flag: Boolean = true) =
+	suspend operator fun invoke(name: String, currentDate: Long, flag: Boolean = true) =
 		localDataRepository.weatherForecast(name, currentDate, flag)
 }

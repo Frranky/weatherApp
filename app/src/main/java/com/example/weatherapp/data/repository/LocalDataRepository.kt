@@ -1,6 +1,7 @@
 package com.example.weatherapp.data.repository
 
 import android.content.Context
+import android.widget.Toast
 import com.example.weatherapp.data.api.GeocodeApi
 import com.example.weatherapp.data.api.WeatherApi
 import com.example.weatherapp.data.mapper.ForecastMapper
@@ -10,6 +11,8 @@ import com.example.weatherapp.data.model.ResponseModel
 import com.example.weatherapp.domain.repository.CityRepository
 import com.example.weatherapp.domain.repository.WeatherForecastRepository
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.util.concurrent.TimeUnit
@@ -32,7 +35,7 @@ class LocalDataRepository(private val context: Context) : CityRepository, Weathe
 		return "Moscow"
 	}
 
-	override fun weatherForecast(name: String, currentDate: Long, flag: Boolean): ResponseModel {
+	override suspend fun weatherForecast(name: String, currentDate: Long, flag: Boolean): ResponseModel {
 		try {
 			val path = context.filesDir
 			val letDirectory = File(path, "json")
@@ -51,7 +54,14 @@ class LocalDataRepository(private val context: Context) : CityRepository, Weathe
 			return ResponseModel(data, currentDate)
 		}
 		catch (e: Exception) {
-			return ResponseModel(arrayListOf(), -1)
+			val path = context.filesDir
+			val letDirectory = File(path, "json")
+			val file = File(letDirectory, "data.json")
+
+			withContext(Dispatchers.Main) {
+				Toast.makeText(context, "Some errors occurred! May be it's wrong city name or network error.", Toast.LENGTH_SHORT).show()
+			}
+			return forecastMapper(FileInputStream(file).bufferedReader().use { it.readText() })
 		}
 	}
 
